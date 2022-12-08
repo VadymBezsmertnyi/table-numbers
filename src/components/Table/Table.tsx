@@ -79,7 +79,7 @@ const Table = () => {
 
                   return (
                     <td
-                      key={`cell_${indexRow}`}
+                      key={`cell_${indexCell}`}
                       onMouseMove={() => setSearchNumber(-cell.amount)}
                       onMouseOut={() => setSearchNumber(0)}
                       onClick={() =>
