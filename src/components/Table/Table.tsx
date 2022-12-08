@@ -15,7 +15,7 @@ const Table = () => {
   const [averageValuesState, setAverageValuesState] = useState<{
     [key: number]: number;
   }>({});
-  const [searchNumber, setSearchNumber] = useState(-300);
+  const [searchNumber, setSearchNumber] = useState(0);
   const array = matrix.flat();
   const cellsHighlight = getNearestNumber(array, searchNumber, valueX);
 
