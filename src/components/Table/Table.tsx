@@ -60,7 +60,7 @@ const Table = () => {
             <tr>
               <th style={classes.column} />
               {matrix[0]?.map((_item, indexColumn) => (
-                <th style={classes.column}>
+                <th key={`header_${indexColumn}`} style={classes.column}>
                   Cell values N = {indexColumn + 1}
                 </th>
               ))}
@@ -69,7 +69,7 @@ const Table = () => {
           </thead>
           <tbody>
             {matrix.map((row, indexRow) => (
-              <tr>
+              <tr key={`row_${indexRow}`}>
                 <td style={classes.column}>Cell Value M = {indexRow + 1}</td>
                 {row.map((cell, indexCell) => {
                   const cellHighlight =
@@ -79,6 +79,7 @@ const Table = () => {
 
                   return (
                     <td
+                      key={`cell_${indexRow}`}
                       onMouseMove={() => setSearchNumber(-cell.amount)}
                       onMouseOut={() => setSearchNumber(0)}
                       onClick={() =>
@@ -109,7 +110,9 @@ const Table = () => {
             <tr>
               <td style={classes.column}>Average values</td>
               {matrix[0]?.map((_item, indexCell) => (
-                <td style={classes.column}>{averageValuesState[indexCell]}</td>
+                <td key={`average_${indexCell}`} style={classes.column}>
+                  {averageValuesState[indexCell]}
+                </td>
               ))}
             </tr>
           </tbody>
