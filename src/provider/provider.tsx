@@ -14,6 +14,13 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
   const [sizeTable, setSizeTable] = useState<TSizeTable>({ m: 0, n: 0 });
   const [valueX, setValueX] = useState<number>(0);
   const [showMatrix, setShowMatrix] = useState<Array<Array<Cell>>>([]);
+  const [idCell, setIdCell] = useState(1);
+
+  const createEmptyArrays = () => {
+    const rows = Array.from(Array(sizeTable.m).keys());
+    const columns = Array.from(Array(sizeTable.n).keys());
+    return { rows, columns };
+  };
 
   const addOneCell = (
     indexRow: number,
@@ -37,20 +44,32 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
     setSizeTable((state) => ({ ...state, m: state.m - 1 }));
   };
 
+  const addNewRow = () => {
+    const { columns } = createEmptyArrays();
+    const newRow = columns.map((_column, indexColumn) => {
+      const randomNumberCell = Math.floor(Math.random() * 1000);
+      return {
+        id: indexColumn + 1 + idCell * 10 + randomNumberCell,
+        amount: randomNumberCell,
+      };
+    });
+    setIdCell((state) => state + 1);
+    setShowMatrix((state) => [...state, newRow]);
+    setSizeTable((state) => ({ ...state, m: state.m + 1 }));
+  };
+
   const createMatrix = () => {
-    const rows = Array.from(Array(sizeTable.m).keys());
-    const columns = Array.from(Array(sizeTable.n).keys());
-    let createIdCell = 0;
-    const matrixState: Array<Array<Cell>> = rows.map(() =>
-      columns.map(() => {
+    const { rows, columns } = createEmptyArrays();
+    const matrixState: Array<Array<Cell>> = rows.map(() => {
+      setIdCell((state) => state + 1);
+      return columns.map((_column, indexColumn) => {
         const randomNumberCell = Math.floor(Math.random() * 1000);
-        createIdCell += 1;
         return {
-          id: createIdCell,
+          id: indexColumn + 1 + idCell * 10 + randomNumberCell,
           amount: randomNumberCell,
         };
-      })
-    );
+      });
+    });
     setShowMatrix(matrixState);
   };
 
@@ -61,6 +80,7 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
       showMatrix?.length === 0
     )
       createMatrix();
+    setIdCell((state) => state + 1);
   }, [sizeTable]);
 
   return (
@@ -73,6 +93,7 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
         matrix: showMatrix,
         addOneCell,
         deleteRow,
+        addNewRow,
       }}
     >
       {children}

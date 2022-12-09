@@ -8,4 +8,5 @@ export const DEFAULT_VALUE_CONTEXT: IDefaultValuesContext = {
   matrix: [[]],
   addOneCell: () => {},
   deleteRow: () => {},
+  addNewRow: () => {},
 };

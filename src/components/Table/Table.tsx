@@ -1,15 +1,19 @@
 import { getNearestNumber } from 'hooks/customFunction';
 import Context from 'provider/provider';
 import { useContext, useEffect, useState } from 'react';
-import { Cell } from 'types/data';
 import { classes } from './Table.styles';
 
 const COLOR_CELL_HIGHLIGHT = '#33ff0085';
 
 const Table = () => {
-  const { matrix, sizeTable, addOneCell, valueX, deleteRow } = useContext(
-    Context
-  );
+  const {
+    matrix,
+    sizeTable,
+    addOneCell,
+    valueX,
+    deleteRow,
+    addNewRow,
+  } = useContext(Context);
   const [hoverCell, setHoverCell] = useState(0);
   const [sumValuesState, setSumValuesState] = useState<{
     [key: number]: number;
@@ -19,6 +23,7 @@ const Table = () => {
   }>({});
   const [searchNumber, setSearchNumber] = useState(0);
   const [showDeleteButtonRow, setShowDeleteButtonRow] = useState(0);
+  const [showButtonAddRow, setShowButtonAddRow] = useState(false);
   const array = matrix.flat();
   const cellsHighlight = getNearestNumber(array, searchNumber, valueX);
 
@@ -139,7 +144,20 @@ const Table = () => {
               );
             })}
             <tr>
-              <td style={classes.column}>Average values</td>
+              <td
+                onMouseMove={() => setShowButtonAddRow(true)}
+                onMouseOut={() => setShowButtonAddRow(false)}
+                style={{
+                  ...classes.column,
+                  display: showButtonAddRow ? 'flex' : 'table-cell',
+                }}
+              >
+                {showButtonAddRow ? (
+                  <button onClick={addNewRow}>Add new row</button>
+                ) : (
+                  `Average values`
+                )}
+              </td>
               {matrix[0]?.map((_item, indexCell) => (
                 <td key={`average_${indexCell}`} style={classes.column}>
                   {averageValuesState[indexCell]}
