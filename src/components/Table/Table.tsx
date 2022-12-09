@@ -45,7 +45,7 @@ const Table = () => {
 
   const showPercent = (value: number, indexRow: number) => {
     const valuePercent = (value * 100) / sumValuesState[indexRow];
-    return `${Math.round(valuePercent)}%`;
+    return Math.round(valuePercent);
   };
 
   useEffect(() => {
@@ -76,6 +76,15 @@ const Table = () => {
                     cellsHighlight.findIndex(
                       (cellHighlight) => cellHighlight.id === cell.id
                     ) >= 0 && searchNumber !== 0;
+                  const colorBackground = cellHighlight
+                    ? COLOR_CELL_HIGHLIGHT
+                    : hoverCell === indexRow + 1
+                    ? `linear-gradient(0deg, rgba(57,222,0,1) ${
+                        showPercent(cell.amount, indexRow) - 10
+                      }%, rgba(255,255,255,1) ${
+                        showPercent(cell.amount, indexRow) + 10
+                      }%)`
+                    : 'white';
 
                   return (
                     <td
@@ -87,13 +96,11 @@ const Table = () => {
                       }
                       style={{
                         ...classes.column,
-                        background: cellHighlight
-                          ? COLOR_CELL_HIGHLIGHT
-                          : 'white',
+                        background: colorBackground,
                       }}
                     >
                       {hoverCell === indexRow + 1
-                        ? showPercent(cell.amount, indexRow)
+                        ? `${showPercent(cell.amount, indexRow)}%`
                         : cell.amount}
                     </td>
                   );
