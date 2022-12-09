@@ -79,7 +79,7 @@ const Table = () => {
                   const colorBackground = cellHighlight
                     ? COLOR_CELL_HIGHLIGHT
                     : hoverCell === indexRow + 1
-                    ? `linear-gradient(0deg, rgba(57,222,0,1) ${
+                    ? `linear-gradient(90deg, rgba(57,222,0,1) ${
                         showPercent(cell.amount, indexRow) - 10
                       }%, rgba(255,255,255,1) ${
                         showPercent(cell.amount, indexRow) + 10
