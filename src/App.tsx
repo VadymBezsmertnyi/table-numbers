@@ -1,8 +1,8 @@
 import React from 'react';
-import './App.css';
-import Header from 'components/Header';
-import Table from 'components/Table';
+import { Header, Table, Footer } from 'components';
 import { ContextProvider } from 'provider/provider';
+
+import './App.css';
 
 const App = () => {
   return (
@@ -11,6 +11,7 @@ const App = () => {
       <main>
         <Table />
       </main>
+      <Footer />
     </ContextProvider>
   );
 };
