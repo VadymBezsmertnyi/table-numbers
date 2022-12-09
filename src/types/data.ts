@@ -18,4 +18,5 @@ export interface IDefaultValuesContext {
   setValueX: (valueX: number) => void;
   matrix: Array<Array<Cell>>;
   addOneCell: (indexRow: number, indexCell: number, newAmount: number) => void;
+  deleteRow: (cellId: number) => void;
 }

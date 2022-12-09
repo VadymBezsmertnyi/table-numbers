@@ -7,7 +7,9 @@ import { classes } from './Table.styles';
 const COLOR_CELL_HIGHLIGHT = '#33ff0085';
 
 const Table = () => {
-  const { matrix, sizeTable, addOneCell, valueX } = useContext(Context);
+  const { matrix, sizeTable, addOneCell, valueX, deleteRow } = useContext(
+    Context
+  );
   const [hoverCell, setHoverCell] = useState(0);
   const [sumValuesState, setSumValuesState] = useState<{
     [key: number]: number;
@@ -16,13 +18,14 @@ const Table = () => {
     [key: number]: number;
   }>({});
   const [searchNumber, setSearchNumber] = useState(0);
+  const [showDeleteButtonRow, setShowDeleteButtonRow] = useState(0);
   const array = matrix.flat();
   const cellsHighlight = getNearestNumber(array, searchNumber, valueX);
 
   const addSumAverageValues = () => {
     matrix.forEach((row, indexRow) => {
       let sumValues = 0;
-      row.forEach((cell, indexCell) => {
+      row.forEach((cell) => {
         sumValues += cell.amount;
       });
       setSumValuesState((state) => ({
@@ -68,52 +71,73 @@ const Table = () => {
             </tr>
           </thead>
           <tbody>
-            {matrix.map((row, indexRow) => (
-              <tr key={`row_${indexRow}`}>
-                <td style={classes.column}>Cell Value M = {indexRow + 1}</td>
-                {row.map((cell, indexCell) => {
-                  const cellHighlight =
-                    cellsHighlight.findIndex(
-                      (cellHighlight) => cellHighlight.id === cell.id
-                    ) >= 0 && searchNumber !== 0;
-                  const colorBackground = cellHighlight
-                    ? COLOR_CELL_HIGHLIGHT
-                    : hoverCell === indexRow + 1
-                    ? `linear-gradient(90deg, rgba(57,222,0,1) ${
-                        showPercent(cell.amount, indexRow) - 10
-                      }%, rgba(255,255,255,1) ${
-                        showPercent(cell.amount, indexRow) + 10
-                      }%)`
-                    : 'white';
+            {matrix.map((row, indexRow) => {
+              const hoverRow = showDeleteButtonRow === indexRow + 1;
+              return (
+                <tr key={`row_${indexRow}`}>
+                  <td
+                    onMouseMove={() => setShowDeleteButtonRow(indexRow + 1)}
+                    onMouseOut={() => setShowDeleteButtonRow(0)}
+                    style={{
+                      ...classes.column,
+                      display: hoverRow ? 'flex' : 'table-cell',
+                    }}
+                  >
+                    {hoverRow ? (
+                      <button
+                        onClick={() => deleteRow(indexRow)}
+                        style={classes.buttonDelete}
+                      >
+                        Delete
+                      </button>
+                    ) : (
+                      `Cell Value M = ${indexRow + 1}`
+                    )}
+                  </td>
+                  {row.map((cell, indexCell) => {
+                    const cellHighlight =
+                      cellsHighlight.findIndex(
+                        (cellHighlight) => cellHighlight.id === cell.id
+                      ) >= 0 && searchNumber !== 0;
+                    const colorBackground = cellHighlight
+                      ? COLOR_CELL_HIGHLIGHT
+                      : hoverCell === indexRow + 1
+                      ? `linear-gradient(90deg, rgba(57,222,0,1) ${
+                          showPercent(cell.amount, indexRow) - 10
+                        }%, rgba(255,255,255,1) ${
+                          showPercent(cell.amount, indexRow) + 10
+                        }%)`
+                      : 'white';
 
-                  return (
-                    <td
-                      key={`cell_${indexCell}`}
-                      onMouseMove={() => setSearchNumber(-cell.amount)}
-                      onMouseOut={() => setSearchNumber(0)}
-                      onClick={() =>
-                        addOneCell(indexRow, indexCell, cell.amount + 1)
-                      }
-                      style={{
-                        ...classes.column,
-                        background: colorBackground,
-                      }}
-                    >
-                      {hoverCell === indexRow + 1
-                        ? `${showPercent(cell.amount, indexRow)}%`
-                        : cell.amount}
-                    </td>
-                  );
-                })}
-                <td
-                  onMouseMove={() => setHoverCell(indexRow + 1)}
-                  onMouseOut={() => setHoverCell(0)}
-                  style={classes.column}
-                >
-                  {sumValuesState[indexRow]}
-                </td>
-              </tr>
-            ))}
+                    return (
+                      <td
+                        key={`cell_${indexCell}`}
+                        onMouseMove={() => setSearchNumber(-cell.amount)}
+                        onMouseOut={() => setSearchNumber(0)}
+                        onClick={() =>
+                          addOneCell(indexRow, indexCell, cell.amount + 1)
+                        }
+                        style={{
+                          ...classes.column,
+                          background: colorBackground,
+                        }}
+                      >
+                        {hoverCell === indexRow + 1
+                          ? `${showPercent(cell.amount, indexRow)}%`
+                          : cell.amount}
+                      </td>
+                    );
+                  })}
+                  <td
+                    onMouseMove={() => setHoverCell(indexRow + 1)}
+                    onMouseOut={() => setHoverCell(0)}
+                    style={classes.column}
+                  >
+                    {sumValuesState[indexRow]}
+                  </td>
+                </tr>
+              );
+            })}
             <tr>
               <td style={classes.column}>Average values</td>
               {matrix[0]?.map((_item, indexCell) => (

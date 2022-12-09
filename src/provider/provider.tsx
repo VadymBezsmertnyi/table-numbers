@@ -30,7 +30,14 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
     setShowMatrix(newMatrix);
   };
 
-  useEffect(() => {
+  const deleteRow = (rowIdState: number) => {
+    setShowMatrix((state) =>
+      state.filter((_item, rowId) => rowId !== rowIdState)
+    );
+    setSizeTable((state) => ({ ...state, m: state.m - 1 }));
+  };
+
+  const createMatrix = () => {
     const rows = Array.from(Array(sizeTable.m).keys());
     const columns = Array.from(Array(sizeTable.n).keys());
     let createIdCell = 0;
@@ -45,6 +52,15 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
       })
     );
     setShowMatrix(matrixState);
+  };
+
+  useEffect(() => {
+    if (
+      sizeTable.m !== showMatrix?.length ||
+      sizeTable.n !== showMatrix[0]?.length ||
+      showMatrix?.length === 0
+    )
+      createMatrix();
   }, [sizeTable]);
 
   return (
@@ -56,6 +72,7 @@ const ContextProvider = ({ children }: IContextProviderProps) => {
         setValueX,
         matrix: showMatrix,
         addOneCell,
+        deleteRow,
       }}
     >
       {children}
